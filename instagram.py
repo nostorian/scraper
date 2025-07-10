@@ -1,5 +1,5 @@
-# insta scraper, made by nostorian, dc: @fw.nos
-
+# github.com/nostorian
+# instagram-scraper
 import tls_client
 import re
 import json
@@ -8,8 +8,9 @@ import ua_generator
 
 
 class InstagramScraper:
-    def __init__(self, username):
+    def __init__(self, username, save_to_file=False):
         self.username = username
+        self.save_to_file = save_to_file
         self.session = tls_client.Session(client_identifier="chrome_120", random_tls_extension_order=True)
         self.base_url = f"https://www.instagram.com/{username}/"
         self.buisness_url = f"https://www.instagram.com/api/v1/users/web_profile_info/?username={username}&hl=en"
@@ -196,9 +197,12 @@ class InstagramScraper:
                 "should_show_category": data.get('should_show_category', 'Unknown'),
                 "pronouns": data.get('pronouns', 'Unknown')
             }
-            with open(f"instagram-{self.username}.json", "w") as f:
-                f.write(json.dumps(user_data, indent=4))
-            print(f"User info for {self.username} saved successfully.")
+            if self.save_to_file:
+                with open(f"instagram-{self.username}.json", "w") as f:
+                    f.write(json.dumps(user_data, indent=4))
+                return user_data
+            else:
+                return user_data
         except Exception as e:
             print(f"Failed to save user info: {e}")
 
